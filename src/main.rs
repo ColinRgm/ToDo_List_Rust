@@ -7,34 +7,36 @@ use clap::{command, Arg};
 
 
 
-// ------------------------------------------------------------------------ Création des drapeaux --
-
 fn main() {
 
-    let arguments = command!().arg(
-        Arg::new("delete")
-    ).get_matches();
+    initalize_flags();
 
     println!("Texte à ajouter dans le fichier txt");
 
     add_text_in_text_file();
 }
 
+/* Function that create the flags */
+fn initalize_flags() {
+
+    // -------------------------------------------------------------------- Création des drapeaux --
+    let arguments = command!().arg(
+        Arg::new("delete").short('d').long("delete")
+    ).get_matches();
+}
 
 
 /* Function that add the text you write in command line in the txt files */
 fn add_text_in_text_file() {
 
+
     // ---------------------------------------------------------- Lecture de l'entrée utilisateur --
-    // Creation of a mutable variable that will store the user entry
-    let mut text = String::new();
 
+    let mut text = String::new(); // Creation of a mutable variable that will store the user entry
 
-    // This function will read the entry
     io::stdin()
         .read_line(&mut text)
-        .expect("Erreur");
-
+        .expect("Erreur"); // This function will read the entry
 
 
     // ------------------------------------------------------- Ajout du texte dans le fichier txt --
@@ -47,17 +49,14 @@ fn add_text_in_text_file() {
         .open(path)                 // open the file
         .expect("Pas de fichier");         // if error
 
-    
-    // Write the text, if can't error e will occure
+
+    // This function will read the entry and add it to the file
     if let Err(e) = writeln!(file, "\n{}", text) {
         eprintln!("Erreur : {}", e);            // if error
     } else {
         eprintln!("ToDo ajoutée au fichier");   // if it works
     }
 
-
-
-    // ----------------------------------------------------------------- Utilisation des drapeaux --
 }
 
 
