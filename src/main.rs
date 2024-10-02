@@ -28,7 +28,11 @@ fn initalize_flags() {
                 // .conflicts_with() Pour éviter d'appeler plusieurs drapeaux en même temps
         )
         .get_matches();
+
+    // println!("Liste des tâches à faire : {}", arguments.get_one::<String>("list").unwrap()); Pour afficher la liste des tâches
 }
+
+
 
 
 /* Function that add the text you write in command line in the txt files */
