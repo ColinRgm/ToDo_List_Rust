@@ -6,9 +6,7 @@ use std::io::{self, Write};
 use clap::{command, Arg};
 
 
-
 fn main() {
-
     initalize_flags();
 
     println!("Texte à ajouter dans le fichier txt");
@@ -20,9 +18,16 @@ fn main() {
 fn initalize_flags() {
 
     // -------------------------------------------------------------------- Création des drapeaux --
-    let arguments = command!().arg(
-        Arg::new("delete").short('d').long("delete")
-    ).get_matches();
+    let arguments = command!()
+        .about("Welcome to your personnal ToDo list !")
+        .arg(
+            Arg::new("delete")
+                .short('d')
+                .long("delete")
+                .help("To delete a todo")
+                // .conflicts_with() Pour éviter d'appeler plusieurs drapeaux en même temps
+        )
+        .get_matches();
 }
 
 
@@ -56,7 +61,6 @@ fn add_text_in_text_file() {
     } else {
         eprintln!("ToDo ajoutée au fichier");   // if it works
     }
-
 }
 
 
