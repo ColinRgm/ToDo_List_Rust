@@ -9,12 +9,10 @@ use clap::{command, Arg};
 fn main() {
     initalize_flags();
 
-    println!("Texte à ajouter dans le fichier txt");
-
     add_text_in_text_file();
 }
 
-/* Function that create the flags */
+
 fn initalize_flags() {
 
     // -------------------------------------------------------------------- Création des drapeaux --
@@ -26,21 +24,41 @@ fn initalize_flags() {
                 .long("delete")
                 .help("To delete a todo")
                 // .conflicts_with() Pour éviter d'appeler plusieurs drapeaux en même temps
+                .action(clap::ArgAction::SetTrue)
         )
         .get_matches();
 
-    // println!("Liste des tâches à faire : {}", arguments.get_one::<String>("list").unwrap()); Pour afficher la liste des tâches
+
+    // ------------------------------------------------------ Appel de la fonction de suppression --
+    if arguments.get_one::<bool>("delete") == Some(&true) {
+        delete_todo();
+    }
+
+    // println!("Liste des tâches à faire : {}", arguments.get_one::<String>("list").unwrap());
+    // Pour afficher la liste des tâches
+}
+
+fn delete_todo() {
+
+    /*
+    1. Récupèrer le fichier
+    2. Récupèrer le  numéro de ligne
+    3. Effacer la ligne complète
+    4. Fermer le programme
+    */
+
+    let path = "todo.txt"; // get file
+
+
+    println!("Deleting a todo...")
 }
 
 
-
-
-/* Function that add the text you write in command line in the txt files */
 fn add_text_in_text_file() {
 
+    println!("Texte à ajouter dans le fichier txt");
 
     // ---------------------------------------------------------- Lecture de l'entrée utilisateur --
-
     let mut text = String::new(); // Creation of a mutable variable that will store the user entry
 
     io::stdin()
@@ -49,21 +67,21 @@ fn add_text_in_text_file() {
 
 
     // ------------------------------------------------------- Ajout du texte dans le fichier txt --
-    let path = "todo.txt";                  // get file
+    let path = "todo.txt"; // get file
 
 
     let mut file = OpenOptions::new()
-        .append(true)           // add text
-        .create(true)           // create the file if not exist
-        .open(path)                 // open the file
-        .expect("Pas de fichier");         // if error
+        .append(true) // add text
+        .create(true) // create the file if not exist
+        .open(path) // open the file
+        .expect("Pas de fichier"); // if error
 
 
-    // This function will read the entry and add it to the file
+    // This condition will read the entry and add it to the file or occure an error
     if let Err(e) = writeln!(file, "\n{}", text) {
-        eprintln!("Erreur : {}", e);            // if error
+        eprintln!("Erreur : {}", e); // if error
     } else {
-        eprintln!("ToDo ajoutée au fichier");   // if it works
+        eprintln!("ToDo ajoutée au fichier"); // if it works
     }
 }
 
