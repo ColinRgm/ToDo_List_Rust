@@ -3,21 +3,23 @@ use std::fs::OpenOptions;
 use std::io::{self, Write};
 
 // For the flags
-use clap::Parser;
+use clap::{command, Arg};
 
 
 
 // ------------------------------------------------------------------------ Création des drapeaux --
-struct Args {
-    delete: bool, // delete a todo
-}
-
 
 fn main() {
+
+    let arguments = command!().arg(
+        Arg::new("delete")
+    ).get_matches();
+
     println!("Texte à ajouter dans le fichier txt");
 
     add_text_in_text_file();
 }
+
 
 
 /* Function that add the text you write in command line in the txt files */
@@ -56,11 +58,6 @@ fn add_text_in_text_file() {
 
 
     // ----------------------------------------------------------------- Utilisation des drapeaux --
-    let args = Args::parse();
-
-    if args.delete {
-        eprintln!("Vous souhaitez supprimer une tâches");
-    }
 }
 
 
