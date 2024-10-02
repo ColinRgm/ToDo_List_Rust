@@ -1,9 +1,16 @@
+use std::string::String;
 use std::fs::OpenOptions;
 use std::io::{self, Write};
 
 // For the flags
-use std::path::PathBuf;
-use clap::{arg, command, value_parser, ArgAction, Command};
+use clap::Parser;
+
+
+
+// ------------------------------------------------------------------------ Création des drapeaux --
+struct Args {
+    delete: bool, // delete a todo
+}
 
 
 fn main() {
@@ -43,30 +50,18 @@ fn add_text_in_text_file() {
     if let Err(e) = writeln!(file, "\n{}", text) {
         eprintln!("Erreur : {}", e);            // if error
     } else {
-        eprintln!("ToDo ajoutée au fichier");              // if it works
+        eprintln!("ToDo ajoutée au fichier");   // if it works
     }
 
-    // -------------------------------------------------------------------- Création des drapeaux --
-    let matches = command!()
-        .arg(arg!([name] "Option"))
-        .arg(
-            arg!(
-                -c --config <FILE>
-            )
-                .required(false)
-                .value_parser(value_parser!(PathBuf)),
-        )
-        .arg(arg!(
-            -d --debug ... " Debugging"
-        ))
-        .subcommand(
-            Command::new("Test")
-                .about("Testing things")
-                .arg(arg!(-l --list "Lists test value").action(ArgAction::SetTrue)),
-        )
-        .get_matches();
-}
 
+
+    // ----------------------------------------------------------------- Utilisation des drapeaux --
+    let args = Args::parse();
+
+    if args.delete {
+        eprintln!("Vous souhaitez supprimer une tâches");
+    }
+}
 
 
 
