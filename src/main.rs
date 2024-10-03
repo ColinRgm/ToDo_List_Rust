@@ -1,19 +1,27 @@
+use std::error::Error;
+use std::fs;
 use std::string::String;
-use std::fs::OpenOptions;
-use std::io::{self, Write};
-
+use std::fs::{File, OpenOptions};
+use std::io::{self, BufRead, BufReader, Write};
+use std::path::Path;
 // For the flags
 use clap::{command, Arg};
 
 
 fn main() {
-    initalize_flags();
+    flags();
 
-    add_text_in_text_file();
+    add_todo();
+
+    delete_todo();
 }
 
 
-fn initalize_flags() {
+
+
+// ------------------------------------------------------------------ Drapeaux et leurs fonctions --
+fn flags() {
+
 
     // -------------------------------------------------------------------- Création des drapeaux --
     let arguments = command!()
@@ -22,7 +30,7 @@ fn initalize_flags() {
             Arg::new("delete")
                 .short('d')
                 .long("delete")
-                .help("To delete a todo")
+                .help("To delete a todo").takes_value(true)
                 // .conflicts_with() Pour éviter d'appeler plusieurs drapeaux en même temps
                 .action(clap::ArgAction::SetTrue)
         )
@@ -34,29 +42,53 @@ fn initalize_flags() {
         delete_todo();
     }
 
+
+    // ------------------------------------------------------------- Afficher la liste des tâches --
     // println!("Liste des tâches à faire : {}", arguments.get_one::<String>("list").unwrap());
-    // Pour afficher la liste des tâches
 }
 
+
+
+
+// -------------------------------------------------------------------------- Supprimer les todos --
 fn delete_todo() {
 
     /*
-    1. Récupèrer le fichier
-    2. Récupèrer le  numéro de ligne
+    1. Récupèrer le fichier - DONE
+    2. Récupèrer le  numéro de ligne - DONE
     3. Effacer la ligne complète
     4. Fermer le programme
     */
 
-    let path = "todo.txt"; // get file
 
+    // ------------------------------------ Récupérer le fichier et retourner le numéro de lignes --
+    fn get_line() -> io::Result<()> {
+        let path = Path::new("todo.txt"); // get file
 
-    println!("Deleting a todo...")
+        let file = File::open(&path)?;
+        let read = BufReader::new(file);
+
+        for (index, line) in read.lines().enumerate() {
+            let line_num = line?;
+
+            println!("Ligne {}: {}", index + 1, line_num);
+        }
+
+        Ok(())
+    }
+
+    get_line();
+
+    // println!("Deleting a todo...")
 }
 
 
-fn add_text_in_text_file() {
 
+
+// --------------------------------------------------------------------------------- Ajouter todo --
+fn add_todo() {
     println!("Texte à ajouter dans le fichier txt");
+
 
     // ---------------------------------------------------------- Lecture de l'entrée utilisateur --
     let mut text = String::new(); // Creation of a mutable variable that will store the user entry
@@ -69,7 +101,6 @@ fn add_text_in_text_file() {
     // ------------------------------------------------------- Ajout du texte dans le fichier txt --
     let path = "todo.txt"; // get file
 
-
     let mut file = OpenOptions::new()
         .append(true) // add text
         .create(true) // create the file if not exist
@@ -77,11 +108,11 @@ fn add_text_in_text_file() {
         .expect("Pas de fichier"); // if error
 
 
-    // This condition will read the entry and add it to the file or occure an error
-    if let Err(e) = writeln!(file, "\n{}", text) {
+    // --------------------------------------------------------------------- Retourner une erreur --
+    if let Err(e) = writeln!(file, "{}", text) {
         eprintln!("Erreur : {}", e); // if error
     } else {
-        eprintln!("ToDo ajoutée au fichier"); // if it works
+        eprintln!("ToDo ajoutée au fichier: {}", path); // if it works
     }
 }
 
