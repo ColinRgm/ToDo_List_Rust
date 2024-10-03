@@ -2,7 +2,7 @@ use std::string::String;
 use std::fs::{File, OpenOptions};
 use std::io::{self, BufRead, BufReader, Write};
 use std::path::Path;
-use clap::{command, Arg, ArgAction, ArgMatches};
+use clap::{command, Arg, ArgAction, Command};
 use std::env;
 
 fn main() {
@@ -15,7 +15,7 @@ fn flags() {
 
 
     // -------------------------------------------------------------------- Création des drapeaux --
-    let arguments = command!()
+    /*let arguments = command!()
         .about("Welcome to your personnal ToDo list ! \n
                 PLease do not delete line 0")
         .arg
@@ -40,13 +40,36 @@ fn flags() {
         )
         // Build the instance
         .get_matches();
+        */
+
+    let arguments = Command::new("My ToDo")
+        .arg(
+            Arg::new("delete")
+                .short('d')
+                .long("delete")
+                .action(ArgAction::Append)
+        );
+
+    let num = arguments.try_get_matches_from(["My ToDo", "-d", "value1", "--delete", "value2"]).unwrap();
+    assert!(matches.contains_id("delete"));
+    assert_eq!(
+        matches.get_many::<String>("delete").unwrap_or_default().map(|n| n.as_str()).collect::<Vec<_>>(),
+        vec!["value1", "value2"]
+    )
+
+    /*
+    if let Some(config_file) = matches!(get_one::<String>("delete")) {
+        println!("Value for config: {}", config_file);
+    } else {
+        println!("No config file specified");
+    }
+    */
 
 
     // --------------------------------------------------------- Appel des fonctions des drapeaux --
     if arguments.get_flag("delete")  {
-        // test_for_arguments();
+        test_for_arguments();
         delete_todo();
-
     } else if arguments.get_flag("add") {
         // test_for_arguments();
         add_todo();
@@ -94,6 +117,8 @@ fn add_todo() {
 }
 
 
+
+
 // -------------------------------------------------------------------------- Supprimer les todos --
 fn delete_todo() {
     /*
@@ -115,6 +140,7 @@ fn delete_todo() {
             let line_num = line?;
 
             println!("Ligne {}: {}", index, line_num);
+
         }
 
         Ok(())
@@ -125,7 +151,8 @@ fn delete_todo() {
     // Supprimer la ligne souhaitée
 
 
-    get_line();
+
+    let _ = get_line();
 
 
     // println!("Deleting a todo...")
