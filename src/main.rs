@@ -2,7 +2,7 @@ use std::string::String;
 use std::fs::{File, OpenOptions};
 use std::io::{self, BufRead, BufReader, Write};
 use std::path::Path;
-use clap::{command, Arg, ArgAction, Command};
+use clap::{command, Arg, ArgAction};
 use std::env;
 
 fn main() {
@@ -15,16 +15,16 @@ fn flags() {
 
 
     // -------------------------------------------------------------------- Création des drapeaux --
-    /*let arguments = command!()
+    let _arguments = command!()
         .about("Welcome to your personnal ToDo list ! \n
                 PLease do not delete line 0")
         .arg
         (
             // Delete flag
             Arg::new("delete")
-                .short('d')// Short Name
-                .long("delete")// Long Name
-                .help("To delete a todo")// Description
+                .short('d') // Short Name
+                .long("delete") // Long Name
+                .help("To delete a todo") // Description
                 .action(ArgAction::Append)
                 .conflicts_with("add") // To avoid conflict between flags
         )
@@ -35,58 +35,41 @@ fn flags() {
                 .short('a')
                 .long("add")
                 .help("To add a todo")
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetFalse)
                 .conflicts_with("delete")
         )
         // Build the instance
         .get_matches();
-        */
 
-    let arguments = Command::new("My ToDo")
-        .arg(
-            Arg::new("delete")
-                .short('d')
-                .long("delete")
-                .action(ArgAction::Append)
-        );
+    let args: Vec<String> = env::args().collect();
 
-    let num = arguments.try_get_matches_from(["My ToDo", "-d", "value1", "--delete", "value2"]).unwrap();
-    assert!(matches.contains_id("delete"));
-    assert_eq!(
-        matches.get_many::<String>("delete").unwrap_or_default().map(|n| n.as_str()).collect::<Vec<_>>(),
-        vec!["value1", "value2"]
-    )
+    let input = args[2].clone();
 
-    /*
-    if let Some(config_file) = matches!(get_one::<String>("delete")) {
-        println!("Value for config: {}", config_file);
-    } else {
-        println!("No config file specified");
-    }
-    */
+    // println!("{}", input);
 
 
     // --------------------------------------------------------- Appel des fonctions des drapeaux --
-    if arguments.get_flag("delete")  {
-        test_for_arguments();
-        delete_todo();
-    } else if arguments.get_flag("add") {
-        // test_for_arguments();
-        add_todo();
-    }
-
+    if input == "1" {
+        println!("Suppression de la ligne {}", input)
+    } else if input == "2" {}
 
     // ------------------------------------------------------------- Afficher la liste des tâches --
     // println!("Liste des tâches à faire : {}", arguments.get_one::<String>("list").unwrap());
 }
-
-fn test_for_arguments() {
-    println!("Tout fonctionne !")
+/*
+fn test() {
+    println!("Delete fonctionne !")
 }
+
+fn test2() {
+    println!("Add fonctionne !")
+}
+
+ */
 
 
 // --------------------------------------------------------------------------------- Ajouter todo --
-fn add_todo() {
+fn _add_todo() {
     println!("Texte à ajouter dans le fichier txt");
 
 
@@ -117,10 +100,8 @@ fn add_todo() {
 }
 
 
-
-
 // -------------------------------------------------------------------------- Supprimer les todos --
-fn delete_todo() {
+fn _delete_todo() {
     /*
         1. Récupèrer le fichier - DONE
         2. Récupèrer le  numéro de ligne - DONE
@@ -140,7 +121,6 @@ fn delete_todo() {
             let line_num = line?;
 
             println!("Ligne {}: {}", index, line_num);
-
         }
 
         Ok(())
@@ -149,8 +129,6 @@ fn delete_todo() {
 
     // Récupérer le numéro de la ligne entrée par l'utilisateur
     // Supprimer la ligne souhaitée
-
-
 
     let _ = get_line();
 
