@@ -1,21 +1,20 @@
-use std::string::String;
 use std::fs::{File, OpenOptions};
-use std::io::{self, BufRead, BufReader, Write};
-use std::path::Path;
+use std::io::{self, BufRead, BufReader, BufWriter, Write};
 use clap::{command, Arg, ArgAction};
-use std::env;
+use std::{env, fs};
 
 fn main() {
-    flags();
+    delete();
 }
 
 
-// ------------------------------------------------------------------ Drapeaux et leurs fonctions --
-fn flags() {
+
+// -------------------------------------------------------------- Drapeaux delete et sa fonctions --
+fn delete() {
 
 
     // -------------------------------------------------------------------- Création des drapeaux --
-    let _arguments = command!()
+    let _arguments_delete = command!()
         .about("Welcome to your personnal ToDo list ! \n
                 PLease do not delete line 0")
         .arg
@@ -26,46 +25,51 @@ fn flags() {
                 .long("delete") // Long Name
                 .help("To delete a todo") // Description
                 .action(ArgAction::Append)
-                .conflicts_with("add") // To avoid conflict between flags
-        )
-        .arg
-        (
-            // Add flag
-            Arg::new("add")
-                .short('a')
-                .long("add")
-                .help("To add a todo")
-                .action(ArgAction::SetFalse)
-                .conflicts_with("delete")
+            // .conflicts_with() // To avoid conflict between flags
         )
         // Build the instance
         .get_matches();
 
+    // Get the argument
     let args: Vec<String> = env::args().collect();
 
-    let input = args[2].clone();
-
-    // println!("{}", input);
+    // Store the argument
+    let num_line = args[2].clone();
 
 
     // --------------------------------------------------------- Appel des fonctions des drapeaux --
-    if input == "1" {
-        println!("Suppression de la ligne {}", input)
-    } else if input == "2" {}
+    if num_line == "1" {
+        _function_de_test();
+    } else if num_line == "2" {
+
+    }
+
+    // ------------------------------------ Récupérer le fichier et retourner le numéro de lignes --
+
+    let file: File = File::open("todo.txt").expect("Fichier inexistant"); // Récupérer le fichier
+
+    let out_file: File = File::create("todo.txt.temp")
+        .expect("Création du fichier impossible"); // Créer un fichier temporaire
+
+    let read = BufReader::new(&file);
+    let mut write =  BufWriter::new(&out_file);
+
+    for (index, line) in read.lines().enumerate() {
+        let line = line.expect("Erreur de ligne");
+
+        if index != num_line.parse().unwrap() {
+            writeln!(write, "{}", line).expect("Erreur");
+        }
+    }
+
+    fs::rename("todo.txt.temp", "todo.txt").unwrap();
+
 
     // ------------------------------------------------------------- Afficher la liste des tâches --
     // println!("Liste des tâches à faire : {}", arguments.get_one::<String>("list").unwrap());
 }
-/*
-fn test() {
-    println!("Delete fonctionne !")
-}
 
-fn test2() {
-    println!("Add fonctionne !")
-}
 
- */
 
 
 // --------------------------------------------------------------------------------- Ajouter todo --
@@ -87,51 +91,23 @@ fn _add_todo() {
     let mut file = OpenOptions::new()
         .append(true) // Ajout du texte
         .create(true) // Créer un fichier si il n'existe pas
-        .open(path) // Ouvrir le fichier h
-        .expect("Pas de fichier"); // if error
+        .open(path) // Ouvrir le fichier
+        .expect("Pas de fichier"); // Message en cas d'erreur
 
 
     // --------------------------------------------------------------------- Retourner une erreur --
     if let Err(e) = writeln!(file, "{}", text) {
-        eprintln!("Erreur : {}", e); // if error
+        eprintln!("Erreur : {}", e); // Si erreur
     } else {
-        eprintln!("ToDo ajoutée au fichier: {}", path); // if it works
+        eprintln!("ToDo ajoutée au fichier: {}", path); // Si tout fonctionne
     }
 }
 
 
-// -------------------------------------------------------------------------- Supprimer les todos --
-fn _delete_todo() {
-    /*
-        1. Récupèrer le fichier - DONE
-        2. Récupèrer le  numéro de ligne - DONE
-        3. Effacer la ligne entré en argument du drapeau
-        4. Fermer le programme
-    */
 
 
-    // ------------------------------------ Récupérer le fichier et retourner le numéro de lignes --
-    fn get_line() -> io::Result<()> {
-        let path = Path::new("todo.txt"); // get file
 
-        let file = File::open(&path)?;
-        let read = BufReader::new(file);
-
-        for (index, line) in read.lines().enumerate() {
-            let line_num = line?;
-
-            println!("Ligne {}: {}", index, line_num);
-        }
-
-        Ok(())
-    }
-
-
-    // Récupérer le numéro de la ligne entrée par l'utilisateur
-    // Supprimer la ligne souhaitée
-
-    let _ = get_line();
-
-
-    // println!("Deleting a todo...")
+// ----------------------------------------------------------- Fonction servant à faire des tests --
+fn _function_de_test() {
+    println!("Ceci est un test")
 }
