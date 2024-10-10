@@ -70,6 +70,16 @@ fn main() {
         )
         .get_matches(); // Build the instance
 
+
+    // Get the argument
+    let args: Vec<String> = env::args().collect();
+
+    // Store the argument
+    if args.len() > 2 {
+        let input = args[2].clone();
+        println!("{}", input);
+    }
+
 }
 
 
