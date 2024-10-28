@@ -1,6 +1,8 @@
-use std::fs::OpenOptions;
-use std::io::Write;
+use std::fs::{OpenOptions};
+use std::io;
 use clap::{Parser};
+
+use std::io::Write;
 
 // ----------------------------------------------------------- Fonction servant à faire des tests --
 fn _function_de_test() {
@@ -9,7 +11,8 @@ fn _function_de_test() {
 
 
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(version, about = "Welcome on your personnal Todo list \n
+                            Here is all the options you can use")]
 struct Flags {
     /// Delete a todo
     #[arg(long)]
@@ -34,15 +37,11 @@ struct Flags {
     /// Sort the todo
     #[arg(long)]
     sort: bool,
-
-    #[arg(required: false)]
-    id: u8
-
 }
 
 fn main() {
-
     let args = Flags::parse();
+
 
     if args.delete {
         _delete() // Call the delete function if delete is in agrument
@@ -57,16 +56,14 @@ fn main() {
     } else if args.sort {
         _sort() // Call the sort function if sort is in agrument
     } else {
-        _add() // Call the add function if nothing is in agrument
+        add() // Call the add function if nothing is in agrument
     }
 }
 
 
-
-
 // --------------------------------------------------------------------------------- Todo ajoutée --
-fn _add() {
-    println!("Texte à ajouter dans le fichier txt");
+fn add() {
+    println!("ToDo à ajouter :");
 
 
     // Lecture de l'entrée utilisateur
@@ -86,21 +83,22 @@ fn _add() {
         .open(path) // Ouvrir le fichier
         .expect("Pas de fichier"); // Message en cas d'erreur
 
-
-    // Retourner une erreur
     if let Err(e) = writeln!(file, "\n{}", text) {
-        eprintln!("Erreur : {}", e); // Si erreur
+        eprintln!("Woops: {}", e);
     } else {
-        eprintln!("ToDo ajoutée au fichier: {}", path); // Si tout fonctionne
+        eprintln!("ToDo ajoutée !");
     }
 }
-
-
 
 
 // -------------------------------------------------------------------------------- Todo suprimée --
 fn _delete() {
     println!("delete a todo");
+
+    // Récupérer le fichier
+    // Récupérer le numéro de la ligne
+    // Effacer la ligne à la ligne entrée en argument
+
 }
 
 
@@ -109,36 +107,51 @@ fn _delete() {
 // ----------------------------------------------------------------------------------- Todo finie --
 fn _done() {
     println!("done");
+
+    // Récupérer le fichier
+    // Récupérer le numéro de la ligne
+    // Fermer la tâche à la ligne entrée en argument
+
 }
-
-
 
 
 // ------------------------------------------------------------------------------- Todo non finie --
 fn _undone() {
     println!("undone");
+
+    // Récupérer le fichier
+    // Récupérer le numéro de la ligne
+    // Réouvrir la tâche à la ligne entrée en argument
+
 }
-
-
 
 
 // -------------------------------------------------------------------------------- Todo deadline --
 fn _due() {
     println!("due");
+
+    // Récupérer le fichier
+    // Récupérer le numéro de la ligne
+    // Ajouter une deadline à la ligne entrée en argument
+
 }
-
-
 
 
 // ---------------------------------------------------------------------------------- Todo listée --
 fn _list() {
     println!("list");
+
+    // Récupérer le fichier
+    // Lister les valeurs du fichier
+
 }
-
-
 
 
 // ----------------------------------------------------------------------------------- Todo triée --
 fn _sort() {
     println!("sort");
+
+    // Récupérer le fichier
+    // Trier les valeurs du fichier par ordre de priorité
+
 }
