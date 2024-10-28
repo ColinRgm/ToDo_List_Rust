@@ -82,6 +82,8 @@ fn add() {
         .read_line(&mut text)
         .expect("Erreur"); // Lire l'entrée
 
+    let text = text.trim();
+
 
     // Ajout du texte dans le fichier txt
     let mut file = OpenOptions::new()
@@ -90,7 +92,7 @@ fn add() {
         .open(PATH) // Ouvrir le fichier
         .expect("Pas de fichier"); // Message en cas d'erreur
 
-    if let Err(e) = writeln!(file, "\n{}", text) {
+    if let Err(e) = writeln!(file, "{}", text) {
         eprintln!("Woops: {}", e);
     } else {
         eprintln!("ToDo ajoutée !");
@@ -142,7 +144,7 @@ fn _due() {
 fn _list() {
     // println!("list");
 
-    // Lister les valeurs du fichier
+    // Lister les entrées du fichier
     let file = File::open(PATH);
 
     let mut contents = String::new();
@@ -150,6 +152,8 @@ fn _list() {
     let _ = file.unwrap().read_to_string(&mut contents);
 
     println!("{}", contents);
+
+    // Récupérer les valeurs done et undone
 }
 
 
