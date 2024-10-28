@@ -2,7 +2,8 @@ use std::fs::{File, OpenOptions};
 use std::io;
 use clap::{Parser};
 
-use std::io::{Read, Write};
+use std::io::{BufRead, BufReader, Read, Write};
+use std::path::Path;
 
 // ----------------------------------------------------------- Fonction servant à faire des tests --
 fn _function_de_test() {
@@ -106,6 +107,20 @@ fn _delete() {
 
     // Récupérer le numéro de la ligne
     // Effacer la ligne à la ligne entrée en argument
+
+    fn get_line() -> io::Result<()> {
+
+        let file = File::open(&PATH)?;
+        let read = BufReader::new(file);
+
+        for (index, line) in read.lines().enumerate() {
+            let line_num = line?;
+
+            println!("Ligne {}: {}", index + 1, line_num);
+        }
+
+        Ok(())
+    }
 
 }
 
