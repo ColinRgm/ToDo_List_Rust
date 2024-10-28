@@ -1,7 +1,6 @@
-use std::fs::{File, OpenOptions};
-use std::io::{BufRead, BufReader, BufWriter, Write};
-use clap::{Arg, ArgAction, command};
-use std::{io, fs, env};
+use std::fs::OpenOptions;
+use std::io::Write;
+use clap::{Parser};
 
 // ----------------------------------------------------------- Fonction servant à faire des tests --
 fn _function_de_test() {
@@ -9,100 +8,56 @@ fn _function_de_test() {
 }
 
 
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Flags {
+    /// Delete a todo
+    #[arg(long)]
+    delete: bool,
+
+    /// Mark a todo as done
+    #[arg(long)]
+    done: bool,
+
+    /// Mark a todo as undone
+    #[arg(long)]
+    undone: bool,
+
+    /// Add a deadline for the todo
+    #[arg(long)]
+    due: bool,
+
+    /// List the todo
+    #[arg(long)]
+    list: bool,
+
+    /// Sort the todo
+    #[arg(long)]
+    sort: bool,
+
+    #[arg(required: false)]
+    id: u8
+
+}
+
 fn main() {
 
-    /*
-        let args: Vec<String> = std::env::args().collect();
+    let args = Flags::parse();
 
-        let flag = &args[1];
-        let parameter = &args[2];
-
-        println!("Flag : {}", flag);
-        println!("Paramètre : {}", parameter);
-
-     */
-    // -------------------------------------------------------------------- Creation des drapeaux --
-    let arguments = command!()
-        .about("Welcome to your todo list !")
-        .arg
-        (
-            // Add flag
-            Arg::new("add")
-                .short('a')
-                .long("add")
-                .help("To add a todo")
-                .action(ArgAction::SetTrue)
-        )
-        .arg
-        (
-            // Delete flag
-            Arg::new("delete")
-                .short('d') // Short Name
-                .long("delete") // Long Name
-                .help("Delete a todo") // Description
-                .action(ArgAction::SetTrue)
-        )
-        .arg
-        (
-            // Done flag
-            Arg::new("done")
-                .short('o') // Short Name
-                .long("done") // Long Name
-                .help("Mark a todo done") // Description
-                .action(ArgAction::SetTrue)
-        )
-        .arg
-        (
-            // Undone flag
-            Arg::new("undone")
-                .short('u') // Short Name
-                .long("undone") // Long Name
-                .help("Mark a todo undone") // Description
-                .action(ArgAction::SetTrue)
-        )
-        .arg
-        (
-            // Due flag
-            Arg::new("due")
-                .short('e') // Short Name
-                .long("due") // Long Name
-                .help("Todo to do") // Description
-                .action(ArgAction::SetTrue)
-        )
-        .arg
-        (
-            // List flag
-            Arg::new("list")
-                .short('l') // Short Name
-                .long("list") // Long Name
-                .help("List the todo") // Description
-                .action(ArgAction::SetTrue)
-        )
-        .arg
-        (
-            Arg::new("sort")
-                .short('s') // Short Name
-                .long("sort") // Long Name
-                .help("Sort the todo") // Description
-                .action(ArgAction::SetTrue)
-        )
-        .get_matches(); // Build the instance
-
-
-    if arguments.get_one::<bool>("add") == Some(&true) {
-        _add()
-    } else if arguments.get_one::<bool>("delete") == Some(&true) {
-        _delete()
-    }
-
-
-    // Get the argument
-    let args: Vec<String> = env::args().collect();
-
-    // Store the argument
-    if args.len() > 2 {
-        let input = args[2].clone();
-        println!("{}", input);
+    if args.delete {
+        _delete() // Call the delete function if delete is in agrument
+    } else if args.done {
+        _done() // Call the done function if done is in agrument
+    } else if args.undone {
+        _undone() // Call the undone function if undone is in agrument
+    } else if args.due {
+        _due() // Call the due function if due is in agrument
+    } else if args.list {
+        _list() // Call the due function if list is in agrument
+    } else if args.sort {
+        _sort() // Call the sort function if sort is in agrument
+    } else {
+        _add() // Call the add function if nothing is in agrument
     }
 }
 
@@ -145,28 +100,7 @@ fn _add() {
 
 // -------------------------------------------------------------------------------- Todo suprimée --
 fn _delete() {
-    let file: File = File::open("todo.txt")
-        .expect("Impossible d'ouvrir le fichier"); // Ouvrir le fichier
-
-    let out_file: File = File::create("todo.txt.temp")
-        .expect("Création impossible"); // Créer une fichier temporaire
-
-    let read = BufReader::new(file); // Permettre la lecture du fichier
-
-    let mut write = BufWriter::new(out_file); // Permettre l'écriture dans le fichier
-
-    for line in read.lines() {
-        let line = line
-            .expect("Erreur");
-
-        if !line.contains("Test") {
-            writeln!(write, "{}", line)
-                .expect("Erreur");
-        }
-    }
-
-    fs::rename("todo.txt.temp", "todo.txt")
-        .expect("Impossible de renommer le fichier");
+    println!("delete a todo");
 }
 
 
