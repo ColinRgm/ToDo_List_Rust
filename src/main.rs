@@ -1,13 +1,16 @@
-use std::fs::{OpenOptions};
+use std::fs::{File, OpenOptions};
 use std::io;
 use clap::{Parser};
 
-use std::io::Write;
+use std::io::{Read, Write};
 
 // ----------------------------------------------------------- Fonction servant à faire des tests --
 fn _function_de_test() {
     println!("Ceci est un test")
 }
+
+// ------------------------------------------------------------------------- Récupérer le fichier --
+const PATH: &str = "todo.txt";
 
 
 #[derive(Parser, Debug)]
@@ -43,17 +46,23 @@ fn main() {
     let args = Flags::parse();
 
 
-    if args.delete {
+    if args.delete
+    {
         _delete() // Call the delete function if delete is in agrument
-    } else if args.done {
+    } else if args.done
+    {
         _done() // Call the done function if done is in agrument
-    } else if args.undone {
+    } else if args.undone
+    {
         _undone() // Call the undone function if undone is in agrument
-    } else if args.due {
+    } else if args.due
+    {
         _due() // Call the due function if due is in agrument
-    } else if args.list {
+    } else if args.list
+    {
         _list() // Call the due function if list is in agrument
-    } else if args.sort {
+    } else if args.sort
+    {
         _sort() // Call the sort function if sort is in agrument
     } else {
         add() // Call the add function if nothing is in agrument
@@ -75,12 +84,10 @@ fn add() {
 
 
     // Ajout du texte dans le fichier txt
-    let path = "todo.txt"; // Récupérer le fichier
-
     let mut file = OpenOptions::new()
         .append(true) // Ajout du texte
         .create(true) // Créer un fichier si il n'existe pas
-        .open(path) // Ouvrir le fichier
+        .open(PATH) // Ouvrir le fichier
         .expect("Pas de fichier"); // Message en cas d'erreur
 
     if let Err(e) = writeln!(file, "\n{}", text) {
@@ -95,20 +102,16 @@ fn add() {
 fn _delete() {
     println!("delete a todo");
 
-    // Récupérer le fichier
     // Récupérer le numéro de la ligne
     // Effacer la ligne à la ligne entrée en argument
 
 }
 
 
-
-
 // ----------------------------------------------------------------------------------- Todo finie --
 fn _done() {
     println!("done");
 
-    // Récupérer le fichier
     // Récupérer le numéro de la ligne
     // Fermer la tâche à la ligne entrée en argument
 
@@ -119,7 +122,6 @@ fn _done() {
 fn _undone() {
     println!("undone");
 
-    // Récupérer le fichier
     // Récupérer le numéro de la ligne
     // Réouvrir la tâche à la ligne entrée en argument
 
@@ -130,7 +132,6 @@ fn _undone() {
 fn _due() {
     println!("due");
 
-    // Récupérer le fichier
     // Récupérer le numéro de la ligne
     // Ajouter une deadline à la ligne entrée en argument
 
@@ -139,11 +140,16 @@ fn _due() {
 
 // ---------------------------------------------------------------------------------- Todo listée --
 fn _list() {
-    println!("list");
+    // println!("list");
 
-    // Récupérer le fichier
     // Lister les valeurs du fichier
+    let file = File::open(PATH);
 
+    let mut contents = String::new();
+
+    let _ = file.unwrap().read_to_string(&mut contents);
+
+    println!("{}", contents);
 }
 
 
@@ -151,7 +157,6 @@ fn _list() {
 fn _sort() {
     println!("sort");
 
-    // Récupérer le fichier
     // Trier les valeurs du fichier par ordre de priorité
 
 }
