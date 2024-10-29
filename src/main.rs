@@ -1,22 +1,44 @@
 use std::fs::{File, OpenOptions};
 use std::io;
 use clap::{Parser};
+use std::io::{BufRead, BufReader, Write};
 
-use std::io::{BufRead, BufReader, Read, Write};
-use std::path::Path;
+
 
 // ----------------------------------------------------------- Fonction servant à faire des tests --
 fn _function_de_test() {
     println!("Ceci est un test")
 }
 
+
+
 // ------------------------------------------------------------------------- Récupérer le fichier --
 const PATH: &str = "todo.txt";
 
 
+
+// ------------------------------------------------------------------------- Récupérer les lignes --
+fn get_line() {
+    // Lister les entrées du fichier
+    let file = File::open(PATH).expect("Pas de fichier");
+
+    let reader = BufReader::new(file);
+
+    for (line_num, line) in reader.lines().enumerate() {
+        let line = line.expect("Impossible de lire la ligne");
+
+        let _id = line_num + 1;
+
+        println!("{}", line);
+    }
+}
+
+
+
+
+// ------------------------------------------------------------------------ Création des drapeaux --
 #[derive(Parser, Debug)]
-#[command(version, about = "Welcome on your personnal Todo list \n
-                            Here is all the options you can use")]
+#[command(version, about = "Welcome on your personnal Todo list")]
 struct Flags {
     /// Delete a todo
     #[arg(long)]
@@ -41,32 +63,49 @@ struct Flags {
     /// Sort the todo
     #[arg(long)]
     sort: bool,
+
+
+    /// ID of the line
+    #[arg(long)]
+    id: Option<u8>,
 }
 
 fn main() {
-    let args = Flags::parse();
 
+    let args = Flags::parse();
 
     if args.delete
     {
-        _delete() // Call the delete function if delete is in agrument
+        delete(); // Call the "delete" function if delete is in agrument
+
+        if args.id > Some(0) {
+            println!("Ligne choisie : {:?}", args.id);
+        }
+
     } else if args.done
     {
-        _done() // Call the done function if done is in agrument
+        done() // Call the "done" function if done is in agrument
+
     } else if args.undone
     {
-        _undone() // Call the undone function if undone is in agrument
+        undone() // Call the "undone" function if undone is in agrument
+
     } else if args.due
     {
-        _due() // Call the due function if due is in agrument
+        due() // Call the "due" function if due is in agrument
+
     } else if args.list
     {
-        _list() // Call the due function if list is in agrument
+        list() // Call the "list" function if list is in agrument
+
     } else if args.sort
     {
-        _sort() // Call the sort function if sort is in agrument
-    } else {
-        add() // Call the add function if nothing is in agrument
+        sort() // Call the "sort" function if sort is in agrument
+
+    } else
+    {
+        add() // Call the "add" function if nothing is in agrument
+
     }
 }
 
@@ -74,7 +113,6 @@ fn main() {
 // --------------------------------------------------------------------------------- Todo ajoutée --
 fn add() {
     println!("ToDo à ajouter :");
-
 
     // Lecture de l'entrée utilisateur
     let mut text = String::new(); // Variable mutable qui stocke l'entrée de l'utilisateur
@@ -84,7 +122,6 @@ fn add() {
         .expect("Erreur"); // Lire l'entrée
 
     let text = text.trim();
-
 
     // Ajout du texte dans le fichier txt
     let mut file = OpenOptions::new()
@@ -102,79 +139,62 @@ fn add() {
 
 
 // -------------------------------------------------------------------------------- Todo suprimée --
-fn _delete() {
-    println!("delete a todo");
+fn delete() {
+    println!("Delete a todo");
 
-    // Récupérer le numéro de la ligne
+    get_line(); // Appelle de la fonction de listing avec le numéro de chaque lignes
+
     // Effacer la ligne à la ligne entrée en argument
-
-    fn get_line() -> io::Result<()> {
-
-        let file = File::open(&PATH)?;
-        let read = BufReader::new(file);
-
-        for (index, line) in read.lines().enumerate() {
-            let line_num = line?;
-
-            println!("Ligne {}: {}", index + 1, line_num);
-        }
-
-        Ok(())
-    }
 
 }
 
 
 // ----------------------------------------------------------------------------------- Todo finie --
-fn _done() {
-    println!("done");
+fn done() {
+    println!("Done");
 
-    // Récupérer le numéro de la ligne
+    get_line(); // Appelle de la fonction de listing avec le numéro de chaque lignes
+
     // Fermer la tâche à la ligne entrée en argument
 
 }
 
 
 // ------------------------------------------------------------------------------- Todo non finie --
-fn _undone() {
-    println!("undone");
+fn undone() {
+    println!("Undone");
 
-    // Récupérer le numéro de la ligne
+    get_line(); // Appelle de la fonction de listing avec le numéro de chaque lignes
+
     // Réouvrir la tâche à la ligne entrée en argument
 
 }
 
 
 // -------------------------------------------------------------------------------- Todo deadline --
-fn _due() {
-    println!("due");
+fn due() {
+    println!("Due");
 
-    // Récupérer le numéro de la ligne
+    // Récupérer le numéro de la ligne (utilisable en tant qu'ID)
     // Ajouter une deadline à la ligne entrée en argument
 
 }
 
 
 // ---------------------------------------------------------------------------------- Todo listée --
-fn _list() {
-    // println!("list");
+fn list() {
+    // println!("List");
 
-    // Lister les entrées du fichier
-    let file = File::open(PATH);
-
-    let mut contents = String::new();
-
-    let _ = file.unwrap().read_to_string(&mut contents);
-
-    println!("{}", contents);
+    get_line(); // Appelle de la fonction de listing avec le numéro de chaque lignes
 
     // Récupérer les valeurs done et undone
+
 }
 
 
 // ----------------------------------------------------------------------------------- Todo triée --
-fn _sort() {
-    println!("sort");
+fn sort() {
+    println!("Sort");
 
     // Trier les valeurs du fichier par ordre de priorité
 
