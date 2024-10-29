@@ -5,6 +5,7 @@ use std::io;
 
 
 
+
 // ----------------------------------------------------------- Fonction servant à faire des tests --
 fn _function_de_test() {
     println!("Ceci est un test")
@@ -12,8 +13,10 @@ fn _function_de_test() {
 
 
 
+
 // ------------------------------------------------------------------------- Récupérer le fichier --
 const PATH: &str = "todo.txt";
+
 
 
 
@@ -43,63 +46,59 @@ fn get_line() {
 struct Flags {
     /// Delete a todo
     #[arg(long)]
-    delete: bool,
+    delete: Option<usize>, // Delete argument
 
     /// Mark a todo as done
     #[arg(long)]
-    done: bool,
+    done: Option<usize>, // Done argument
 
     /// Mark a todo as undone
     #[arg(long)]
-    undone: bool,
+    undone: Option<usize>, // Undone argument
 
-    /// Add a deadline for the todo
+    /// Add a date for the todo
     #[arg(long)]
-    due: bool,
+    due_date: Option<usize>, // Deadline argument
+
+    /// Index for the due arg
+    #[arg(long)]
+    due_index: Option<usize>, // Index argument
 
     /// List the todo
     #[arg(long)]
-    list: bool,
+    list: bool, // List argument
 
     /// Sort the todo
     #[arg(long)]
-    sort: bool,
+    sort: bool, // Sort argument
 
-    /// ID of the line
+    /// Add a todo
     #[arg(long)]
-    id: Option<u8>
+    add: Option<usize> // Add argument
 
 }
 
 fn main() {
 
-    let args = Flags::parse();
+    let flag = Flags::parse();
 
-    if args.id > Some(0) {
-        println!("Ligne choisie : {:?}", args.id);
-    }
-
-    if args.delete
+    if flag.delete
     {
         delete(); // Call the "delete" function if delete is in agrument
 
-    } else if args.done
+    } else if flag.done
     {
         done() // Call the "done" function if done is in agrument
 
-    } else if args.undone
+    } else if flag.undone
     {
         undone() // Call the "undone" function if undone is in agrument
 
-    } else if args.due
-    {
-        due() // Call the "due" function if due is in agrument
-
-    } else if args.list
+    } else if flag.list
     {
         list() // Call the "list" function if list is in agrument
 
-    } else if args.sort
+    } else if flag.sort
     {
         sort() // Call the "sort" function if sort is in agrument
 
@@ -109,6 +108,8 @@ fn main() {
 
     }
 }
+
+
 
 
 // --------------------------------------------------------------------------------- Todo ajoutée --
@@ -139,6 +140,8 @@ fn add() {
 }
 
 
+
+
 // -------------------------------------------------------------------------------- Todo suprimée --
 fn delete() {
     println!("Delete a todo");
@@ -148,6 +151,8 @@ fn delete() {
     // Effacer la ligne à la ligne entrée en argument
 
 }
+
+
 
 
 // ----------------------------------------------------------------------------------- Todo finie --
@@ -161,6 +166,8 @@ fn done() {
 }
 
 
+
+
 // ------------------------------------------------------------------------------- Todo non finie --
 fn undone() {
     println!("Undone");
@@ -170,6 +177,8 @@ fn undone() {
     // Réouvrir la tâche à la ligne entrée en argument
 
 }
+
+
 
 
 // -------------------------------------------------------------------------------- Todo deadline --
@@ -182,6 +191,8 @@ fn due() {
 }
 
 
+
+
 // ---------------------------------------------------------------------------------- Todo listée --
 fn list() {
     // println!("List");
@@ -191,6 +202,8 @@ fn list() {
     // Récupérer les valeurs done et undone
 
 }
+
+
 
 
 // ----------------------------------------------------------------------------------- Todo triée --
