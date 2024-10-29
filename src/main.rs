@@ -1,7 +1,7 @@
 use std::fs::{File, OpenOptions};
-use std::io;
-use clap::{Parser};
+use clap::Parser;
 use std::io::{BufRead, BufReader, Write};
+use std::io;
 
 
 
@@ -17,8 +17,9 @@ const PATH: &str = "todo.txt";
 
 
 
-// ------------------------------------------------------------------------- Récupérer les lignes --
+// --------------------------------------------------------------- Récupérer les numéros de ligne --
 fn get_line() {
+
     // Lister les entrées du fichier
     let file = File::open(PATH).expect("Pas de fichier");
 
@@ -27,9 +28,9 @@ fn get_line() {
     for (line_num, line) in reader.lines().enumerate() {
         let line = line.expect("Impossible de lire la ligne");
 
-        let _id = line_num + 1;
+        let id = line_num + 1;
 
-        println!("{}", line);
+        println!("{}, content -> {}", id, line);
     }
 }
 
@@ -64,23 +65,23 @@ struct Flags {
     #[arg(long)]
     sort: bool,
 
-
     /// ID of the line
     #[arg(long)]
     id: Option<u8>
+
 }
 
 fn main() {
 
     let args = Flags::parse();
 
+    if args.id > Some(0) {
+        println!("Ligne choisie : {:?}", args.id);
+    }
+
     if args.delete
     {
         delete(); // Call the "delete" function if delete is in agrument
-
-        if args.id > Some(0) {
-            println!("Ligne choisie : {:?}", args.id);
-        }
 
     } else if args.done
     {
@@ -142,7 +143,7 @@ fn add() {
 fn delete() {
     println!("Delete a todo");
 
-    get_line(); // Appelle de la fonction de listing avec le numéro de chaque lignes
+    // get_line(); // Appelle de la fonction de listing avec le numéro de chaque lignes
 
     // Effacer la ligne à la ligne entrée en argument
 
