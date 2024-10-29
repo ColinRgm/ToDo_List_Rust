@@ -4,20 +4,8 @@ use std::io::{BufRead, BufReader, Write};
 use std::io;
 
 
-
-
-// ----------------------------------------------------------- Fonction servant à faire des tests --
-fn _function_de_test() {
-    println!("Ceci est un test")
-}
-
-
-
-
 // ------------------------------------------------------------------------- Récupérer le fichier --
 const PATH: &str = "todo.txt";
-
-
 
 
 // --------------------------------------------------------------- Récupérer les numéros de ligne --
@@ -36,8 +24,6 @@ fn get_line() {
         println!("{}, content -> {}", id, line);
     }
 }
-
-
 
 
 // ------------------------------------------------------------------------ Création des drapeaux --
@@ -74,42 +60,51 @@ struct Flags {
 
     /// Add a todo
     #[arg(long)]
-    add: Option<usize> // Add argument
+    add: Option<usize>, // Add argument
 
 }
+
+#[derive(Debug)]
+struct Todo {
+    text: String,
+    done: bool,
+    due_date: Option<String>,
+}
+
 
 fn main() {
-
     let flag = Flags::parse();
 
+    // Call the "delete" function if delete is in agrument -----------------------------------------
     if flag.delete
     {
-        delete(); // Call the "delete" function if delete is in agrument
-
-    } else if flag.done
+        delete();
+    }
+    // Call the "done" function if done is in agrument ---------------------------------------------
+    else if flag.done
     {
-        done() // Call the "done" function if done is in agrument
-
-    } else if flag.undone
+        done()
+    }
+    // Call the "undone" function if undone is in agrument -----------------------------------------
+    else if flag.undone
     {
-        undone() // Call the "undone" function if undone is in agrument
-
-    } else if flag.list
+        undone()
+    }
+    // Call the "list" function if list is in agrument ---------------------------------------------
+    else if flag.list
     {
-        list() // Call the "list" function if list is in agrument
-
-    } else if flag.sort
+        list()
+    }
+    // Call the "sort" function if sort is in agrument ---------------------------------------------
+    else if flag.sort
     {
-        sort() // Call the "sort" function if sort is in agrument
-
-    } else
-    {
-        add() // Call the "add" function if nothing is in agrument
-
+        sort()
+    }
+    // Call the "add" function if nothing is in agrument -------------------------------------------
+    else {
+        add()
     }
 }
-
-
 
 
 // --------------------------------------------------------------------------------- Todo ajoutée --
@@ -140,19 +135,13 @@ fn add() {
 }
 
 
-
-
 // -------------------------------------------------------------------------------- Todo suprimée --
 fn delete() {
-    println!("Delete a todo");
+    println!("Delete");
 
-    // get_line(); // Appelle de la fonction de listing avec le numéro de chaque lignes
-
-    // Effacer la ligne à la ligne entrée en argument
+    // get_line();
 
 }
-
-
 
 
 // ----------------------------------------------------------------------------------- Todo finie --
@@ -166,8 +155,6 @@ fn done() {
 }
 
 
-
-
 // ------------------------------------------------------------------------------- Todo non finie --
 fn undone() {
     println!("Undone");
@@ -177,8 +164,6 @@ fn undone() {
     // Réouvrir la tâche à la ligne entrée en argument
 
 }
-
-
 
 
 // -------------------------------------------------------------------------------- Todo deadline --
@@ -191,8 +176,6 @@ fn due() {
 }
 
 
-
-
 // ---------------------------------------------------------------------------------- Todo listée --
 fn list() {
     // println!("List");
@@ -202,8 +185,6 @@ fn list() {
     // Récupérer les valeurs done et undone
 
 }
-
-
 
 
 // ----------------------------------------------------------------------------------- Todo triée --
