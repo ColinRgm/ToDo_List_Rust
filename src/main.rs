@@ -67,7 +67,7 @@ struct Flags {
 
     /// ID of the line
     #[arg(long)]
-    id: Option<u8>,
+    id: Option<u8>
 }
 
 fn main() {
