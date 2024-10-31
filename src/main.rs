@@ -1,3 +1,4 @@
+use std::fs;
 use chrono::NaiveDate;
 use clap::Parser;
 use serde::{Deserialize, Serialize};
@@ -13,9 +14,9 @@ const PATH: &str = "todo.json";
 // --------------------------------------------------------------------------- Structure des ToDo --
 #[derive(Debug, Serialize, Deserialize)]
 struct Todo {
-    text: String,
-    done: bool,
-    deadline: Option<NaiveDate>,
+    todo_text: String,
+    done_undone: bool,
+    due: Option<NaiveDate>,
 }
 
 
@@ -37,11 +38,7 @@ struct Flags {
 
     /// Add a date for the todo
     #[arg(long)]
-    due_date: Option<usize>, // Deadline argument
-
-    /// Index for the due arg
-    #[arg(long)]
-    due_index: Option<usize>, // Index argument
+    due_date: Option<String>, // Deadline argument
 
     /// List the todo
     #[arg(long)]
@@ -56,8 +53,9 @@ struct Flags {
 }
 
 
-fn main() -> std::io::Result<()> {
-    let mut flag = Flags::parse();
+fn main() -> io::Result<()> {
+
+    let flag = Flags::parse();
 
 
     // ------------------------------------------------------------------------ Ouvrir le fichier --
@@ -76,36 +74,52 @@ fn main() -> std::io::Result<()> {
     // Call the "delete" function if delete is in agrument -----------------------------------------
     if flag.delete
     {
+        // Nécessite l'ID de la ToDO -> flag.id
         delete(&mut todos, flag.id)
     }
     // Call the "done" function if done is in agrument ---------------------------------------------
     else if flag.done
     {
+        // Nécessite l'ID de la ToDO -> flag.id
         done(&mut todos, flag.id)
     }
     // Call the "undone" function if undone is in agrument -----------------------------------------
     else if flag.undone
     {
+        // Nécessite l'ID de la ToDO -> flag.id
         undone(&mut todos, flag.id)
     }
     // Call the "list" function if list is in agrument ---------------------------------------------
     else if flag.list
     {
-        list(&todos)
+        list(&mut todos)
     }
     // Call the "sort" function if sort is in agrument ---------------------------------------------
     else if flag.sort
     {
         sort(&mut todos)
     }
-    // Call the "add" function if nothing is in agrument -------------------------------------------
-    else
+    // Call the "due" function if due is in argument -----------------------------------------------
+    else if let Some(due_date) = flag.due_date
     {
+        // Nécessite l'ID et la date de fin de la ToDO -> flag.id, &due_date
+        due(&mut todos, flag.id, &due_date)
+    }
+    // Call the "add" function if nothing is in agrument -------------------------------------------
+    else {
         add(&mut todos)
     }
 
+
+    // Écriture dans le fichier JSON (reformater)
+    fs::write(PATH, serde_json::to_string_pretty(&todos)
+        .expect("Sérialisation impossible"))
+        .expect("Écriture impossible");
+
     Ok(())
 }
+
+
 
 
 // --------------------------------------------------------------------------------- Todo ajoutée --
@@ -115,56 +129,95 @@ fn add(todos: &mut Vec<Todo>) {
     // Lecture de l'entrée utilisateur
     let mut text = String::new(); // Variable mutable qui stocke l'entrée de l'utilisateur
 
-    io::stdin().read_line(&mut text).expect("Lecture de ligne impossible");
+    io::stdin().read_line(&mut text)
+        .expect("Lecture de ligne impossible");
 
     let users_todo = Todo {
-        message: text.trim().to_string(),
-        status: false,
-        deadline: None,
-    }
+        todo_text: text.trim().to_string(),
+        done_undone: false,
+        due: None,
+    };
 
     todos.push(users_todo)
 }
 
 
+
+
 // -------------------------------------------------------------------------------- Todo suprimée --
 fn delete(todos: &mut Vec<Todo>, id: usize) {
-    if id > 0 && id <= todos.len() {
+
+    // println!("Delete");
+
+    // Si l'ID et plus grand que 0 mais plus petit que la longueur de la liste
+    if id > 0 && id <= todos.len()
+    {
         todos.remove(id - 1);
 
         println!("ToDo supprimée")
     }
+    // Si l'ID n'est pas compris entre 0 et la longeur de la liste
     else {
         println!("ID invalide")
     }
 }
 
 
+
+
 // ----------------------------------------------------------------------------------- Todo finie --
-fn done() {
-    println!("Done");
+fn done(todos: &mut Vec<Todo>, id: usize) {
+
+    // println!("Done");
+
+    // Si l'ID et plus grand que 0 mais plus petit que la longueur de la liste
+    if id > 0 && id <= todos.len()
+    {
+        todos[id - 1].done_undone = true;
+        println!("ToDo terminée")
+    }
+    // Si l'ID n'est pas compris entre 0 et la longeur de la liste
+    else
+    {
+        println!("ID invalide")
+    }
 }
+
+
 
 
 // ------------------------------------------------------------------------------- Todo non finie --
-fn undone() {
+fn undone(todos: &mut Vec<Todo>, id: usize) {
     println!("Undone");
+
+    if id > 0 && id <= todos.len() {
+        todos[id - 1].done_undone = false;
+        println!("ToDo terminée")
+    } else {
+        println!("ID invalide")
+    }
 }
 
 
+
+
 // -------------------------------------------------------------------------------- Todo deadline --
-fn due() {
+fn due(_todos: &mut Vec<Todo>, _id: usize, _due_date: &str) {
     println!("Due");
 }
 
 
+
+
 // ---------------------------------------------------------------------------------- Todo listée --
-fn list() {
+fn list(_todos: &mut Vec<Todo>) {
     println!("List");
 }
 
 
+
+
 // ----------------------------------------------------------------------------------- Todo triée --
-fn sort() {
+fn sort(_todos: &mut Vec<Todo>) {
     println!("Sort");
 }
