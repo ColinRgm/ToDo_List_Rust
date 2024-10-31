@@ -1,28 +1,21 @@
-use std::fs::{File, OpenOptions};
+use chrono::NaiveDate;
 use clap::Parser;
-use std::io::{BufRead, BufReader, Write};
-use std::io;
+use serde::{Deserialize, Serialize};
+use serde_json;
+use std::fs::read_to_string;
+use std::io::{self};
 
 
 // ------------------------------------------------------------------------- Récupérer le fichier --
-const PATH: &str = "todo.txt";
+const PATH: &str = "todo.json";
 
 
-// --------------------------------------------------------------- Récupérer les numéros de ligne --
-fn get_line() {
-
-    // Lister les entrées du fichier
-    let file = File::open(PATH).expect("Pas de fichier");
-
-    let reader = BufReader::new(file);
-
-    for (line_num, line) in reader.lines().enumerate() {
-        let line = line.expect("Impossible de lire la ligne");
-
-        let id = line_num + 1;
-
-        println!("{}, content -> {}", id, line);
-    }
+// --------------------------------------------------------------------------- Structure des ToDo --
+#[derive(Debug, Serialize, Deserialize)]
+struct Todo {
+    text: String,
+    done: bool,
+    deadline: Option<NaiveDate>,
 }
 
 
@@ -32,15 +25,15 @@ fn get_line() {
 struct Flags {
     /// Delete a todo
     #[arg(long)]
-    delete: Option<usize>, // Delete argument
+    delete: bool, // Delete argument
 
     /// Mark a todo as done
     #[arg(long)]
-    done: Option<usize>, // Done argument
+    done: bool, // Done argument
 
     /// Mark a todo as undone
     #[arg(long)]
-    undone: Option<usize>, // Undone argument
+    undone: bool, // Undone argument
 
     /// Add a date for the todo
     #[arg(long)]
@@ -58,139 +51,120 @@ struct Flags {
     #[arg(long)]
     sort: bool, // Sort argument
 
-    /// Add a todo
-    #[arg(long)]
-    add: Option<usize>, // Add argument
-
-}
-
-#[derive(Debug)]
-struct Todo {
-    text: String,
-    done: bool,
-    due_date: Option<String>,
+    #[arg(long, default_value_t = 0)]
+    id: usize, // ID ToDo
 }
 
 
-fn main() {
-    let flag = Flags::parse();
+fn main() -> std::io::Result<()> {
+    let mut flag = Flags::parse();
+
+
+    // ------------------------------------------------------------------------ Ouvrir le fichier --
+    let mut todos: Vec<Todo> = match read_to_string("todo.json") {
+        Err(_) => Vec::new(),
+        Ok(todo_list) => {
+            if todo_list.trim().is_empty() {
+                Vec::new() // Si le fichier est vide, Vec::new
+            } else {
+                serde_json::from_str(&todo_list).expect("Analyse du fichier impossible")
+            }
+        }
+    };
+
 
     // Call the "delete" function if delete is in agrument -----------------------------------------
     if flag.delete
     {
-        delete();
+        delete(&mut todos, flag.id)
     }
     // Call the "done" function if done is in agrument ---------------------------------------------
     else if flag.done
     {
-        done()
+        done(&mut todos, flag.id)
     }
     // Call the "undone" function if undone is in agrument -----------------------------------------
     else if flag.undone
     {
-        undone()
+        undone(&mut todos, flag.id)
     }
     // Call the "list" function if list is in agrument ---------------------------------------------
     else if flag.list
     {
-        list()
+        list(&todos)
     }
     // Call the "sort" function if sort is in agrument ---------------------------------------------
     else if flag.sort
     {
-        sort()
+        sort(&mut todos)
     }
     // Call the "add" function if nothing is in agrument -------------------------------------------
-    else {
-        add()
+    else
+    {
+        add(&mut todos)
     }
+
+    Ok(())
 }
 
 
 // --------------------------------------------------------------------------------- Todo ajoutée --
-fn add() {
+fn add(todos: &mut Vec<Todo>) {
     println!("ToDo à ajouter :");
 
     // Lecture de l'entrée utilisateur
     let mut text = String::new(); // Variable mutable qui stocke l'entrée de l'utilisateur
 
-    io::stdin()
-        .read_line(&mut text)
-        .expect("Erreur"); // Lire l'entrée
+    io::stdin().read_line(&mut text).expect("Lecture de ligne impossible");
 
-    let text = text.trim();
-
-    // Ajout du texte dans le fichier txt
-    let mut file = OpenOptions::new()
-        .append(true) // Ajout du texte
-        .create(true) // Créer un fichier si il n'existe pas
-        .open(PATH) // Ouvrir le fichier
-        .expect("Pas de fichier"); // Message en cas d'erreur
-
-    if let Err(e) = writeln!(file, "{}", text) {
-        eprintln!("Woops: {}", e);
-    } else {
-        eprintln!("ToDo ajoutée !");
+    let users_todo = Todo {
+        message: text.trim().to_string(),
+        status: false,
+        deadline: None,
     }
+
+    todos.push(users_todo)
 }
 
 
 // -------------------------------------------------------------------------------- Todo suprimée --
-fn delete() {
-    println!("Delete");
+fn delete(todos: &mut Vec<Todo>, id: usize) {
+    if id > 0 && id <= todos.len() {
+        todos.remove(id - 1);
 
-    // get_line();
-
+        println!("ToDo supprimée")
+    }
+    else {
+        println!("ID invalide")
+    }
 }
 
 
 // ----------------------------------------------------------------------------------- Todo finie --
 fn done() {
     println!("Done");
-
-    get_line(); // Appelle de la fonction de listing avec le numéro de chaque lignes
-
-    // Fermer la tâche à la ligne entrée en argument
-
 }
 
 
 // ------------------------------------------------------------------------------- Todo non finie --
 fn undone() {
     println!("Undone");
-
-    get_line(); // Appelle de la fonction de listing avec le numéro de chaque lignes
-
-    // Réouvrir la tâche à la ligne entrée en argument
-
 }
 
 
 // -------------------------------------------------------------------------------- Todo deadline --
 fn due() {
     println!("Due");
-
-    // Récupérer le numéro de la ligne (utilisable en tant qu'ID)
-    // Ajouter une deadline à la ligne entrée en argument
-
 }
 
 
 // ---------------------------------------------------------------------------------- Todo listée --
 fn list() {
-    // println!("List");
-
-    get_line(); // Appelle de la fonction de listing avec le numéro de chaque lignes
-
-    // Récupérer les valeurs done et undone
-
+    println!("List");
 }
 
 
 // ----------------------------------------------------------------------------------- Todo triée --
 fn sort() {
     println!("Sort");
-
-    // Trier les valeurs du fichier par ordre de priorité
-
 }
