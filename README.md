@@ -26,22 +26,22 @@
 - [x] Modifiez le code pour que lorsque vous ajoutez une todo suppémentaire (nouveau lancement du programme),
    une ligne soit ajoutée dans le fichier texte.
 
-- [ ] Modifiez le code pour que si l'utilisateur écrit un drapeau --delete suivi du numéro de ligne d'une todo,
+- [x] Modifiez le code pour que si l'utilisateur écrit un drapeau --delete suivi du numéro de ligne d'une todo,
    elle soit supprimée du fichier.
 
-- [ ] Modifiez le système pour utiliser un fichier JSON pour le stockage des todos, pour ce faire,
+- [x] Modifiez le système pour utiliser un fichier JSON pour le stockage des todos, pour ce faire,
    il faudra utiliser une struct rust anisi que la librairie serde.
 
-- [ ] Modifiez le code pour utiliser la libraire clap afin de pouvoir gèrer automatiquement
+- [x] Modifiez le code pour utiliser la libraire clap afin de pouvoir gèrer automatiquement
    les arguments et drapeaux de la ligne de commande.
 
-- [ ] Ajoutez un drapeau --done suivi du numéro de la todo pour indiquer qu'elle est terminée.
+- [x] Ajoutez un drapeau --done suivi du numéro de la todo pour indiquer qu'elle est terminée.
 
-- [ ] Ajoutez un drapeau --undone suvi du numéro de la todo pour indiquer qu'elle n'est pas terminée.
+- [x] Ajoutez un drapeau --undone suvi du numéro de la todo pour indiquer qu'elle n'est pas terminée.
 
 - [ ] Ajoutez un nouveau drapeau --due suivi d'une date au format "YY-MM-DD" afin d'ajouter une deadline.
 
-- [ ] Ajoutez un drapeau --list pour afficher toutes les toods et leurs status (done, undone).
+- [x] Ajoutez un drapeau --list pour afficher toutes les toods et leurs status (done, undone).
 
 - [ ] Ajoutez un drapeau --sort pour trier la liste dans l'ordre de priorités
 
