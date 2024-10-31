@@ -15,14 +15,14 @@ const PATH: &str = "todo.json";
 #[derive(Debug, Serialize, Deserialize)]
 struct Todo {
     todo_text: String,
-    done_undone: bool,
+    done: bool,
     due: Option<NaiveDate>,
 }
 
 
 // ------------------------------------------------------------------------ Création des drapeaux --
 #[derive(Parser, Debug)]
-#[command(version, about = "Welcome on your personnal Todo list")]
+#[command(version, about = "Your Todo")]
 struct Flags {
     /// Delete a todo
     #[arg(long)]
@@ -54,7 +54,6 @@ struct Flags {
 
 
 fn main() -> io::Result<()> {
-
     let flag = Flags::parse();
 
 
@@ -120,10 +119,11 @@ fn main() -> io::Result<()> {
 }
 
 
-
-
 // --------------------------------------------------------------------------------- Todo ajoutée --
 fn add(todos: &mut Vec<Todo>) {
+
+    // println!("Add")
+
     println!("ToDo à ajouter :");
 
     // Lecture de l'entrée utilisateur
@@ -134,14 +134,12 @@ fn add(todos: &mut Vec<Todo>) {
 
     let users_todo = Todo {
         todo_text: text.trim().to_string(),
-        done_undone: false,
+        done: false,
         due: None,
     };
 
     todos.push(users_todo)
 }
-
-
 
 
 // -------------------------------------------------------------------------------- Todo suprimée --
@@ -163,8 +161,6 @@ fn delete(todos: &mut Vec<Todo>, id: usize) {
 }
 
 
-
-
 // ----------------------------------------------------------------------------------- Todo finie --
 fn done(todos: &mut Vec<Todo>, id: usize) {
 
@@ -173,51 +169,88 @@ fn done(todos: &mut Vec<Todo>, id: usize) {
     // Si l'ID et plus grand que 0 mais plus petit que la longueur de la liste
     if id > 0 && id <= todos.len()
     {
-        todos[id - 1].done_undone = true;
+        todos[id - 1].done = true;
         println!("ToDo terminée")
     }
     // Si l'ID n'est pas compris entre 0 et la longeur de la liste
-    else
-    {
+    else {
         println!("ID invalide")
     }
 }
-
-
 
 
 // ------------------------------------------------------------------------------- Todo non finie --
 fn undone(todos: &mut Vec<Todo>, id: usize) {
-    println!("Undone");
 
-    if id > 0 && id <= todos.len() {
-        todos[id - 1].done_undone = false;
-        println!("ToDo terminée")
-    } else {
+    // println!("Undone");
+
+    // Si l'ID et plus grand que 0 mais plus petit que la longueur de la liste
+    if id > 0 && id <= todos.len()
+    {
+        todos[id - 1].done = false;
+        println!("ToDo non-terminée")
+    }
+    // Si l'ID n'est pas compris entre 0 et la longeur de la liste
+    else {
         println!("ID invalide")
     }
 }
 
 
-
-
 // -------------------------------------------------------------------------------- Todo deadline --
 fn due(_todos: &mut Vec<Todo>, _id: usize, _due_date: &str) {
+
     println!("Due");
 }
 
 
-
-
 // ---------------------------------------------------------------------------------- Todo listée --
-fn list(_todos: &mut Vec<Todo>) {
+fn list(todos: &mut Vec<Todo>) {
+
     println!("List");
+
+    if todos.is_empty()
+    {
+        println!("Aucune tâche à afficher.");
+    }
+        // Afficher les todos avec leurs status
+    else
+    {
+        for (i, todo) in todos.iter().enumerate() {
+            let status = if todo.done
+            {
+                "Terminée"
+            } else {
+                "Non terminée"
+            };
+            println!("{}: [{}] {}", i + 1, status, todo.todo_text);
+        }
+    }
 }
 
 
-
-
 // ----------------------------------------------------------------------------------- Todo triée --
-fn sort(_todos: &mut Vec<Todo>) {
+fn sort(todos: &mut Vec<Todo>) {
+
     println!("Sort");
+
+    /*
+    if todos.is_empty()
+    {
+        println!("Aucune tâche à afficher.");
+    }
+        // Afficher les todos avec leurs status
+    else
+    {
+        for (i, todo) in todos.iter().enumerate() {
+            let status = if todo.done
+            {
+                "Terminée"
+            } else {
+                "Non terminée"
+            };
+            println!("{}: [{}] {}", i + 1, status, todo.todo_text);
+        }
+    }
+    */
 }
