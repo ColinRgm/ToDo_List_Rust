@@ -48,3 +48,19 @@
 
 
 ### Comment utiliser la ToDo List
+
+1. Ouvrir le dossier du projet dans le terminal
+2. Lancer la commande cargo build
+   3. Permet de compiler le code source et de générer un exécutable
+4. Lancer ensuite la commande cargo run
+   5. Qui permettra de lancer le projet
+   6. Vous demandera également d'ajouter une tâche
+7. Si vous voulez supprimer un tâche
+   8. cargo run -- --delete --id 1 (supprimera la tâche avec l'ID n°1)
+8. Pour marquer une tâche comme terminée
+   9. cargo run -- --done --id 1
+10. Pour marquer une tâche comme non terminée
+    11. cargo run -- --undone --id 1
+12. Pour lister vos tâches
+    13. cargo run -- --list
+14. 
