@@ -198,9 +198,20 @@ fn undone(todos: &mut Vec<Todo>, id: usize) {
 
 
 // -------------------------------------------------------------------------------- Todo deadline --
-fn due(_todos: &mut Vec<Todo>, _id: usize, _due_date: &str) {
+fn due(todos: &mut Vec<Todo>, id: usize, _due_date: &str) {
 
     println!("Due");
+
+     if id > 0 && id <= todos.len()
+    {
+        println!("Deadline ajoutée")
+    }
+    // Si l'ID n'est pas compris entre 0 et la longeur de la liste
+    else {
+        println!("ID invalide")
+    }
+
+
 }
 
 
