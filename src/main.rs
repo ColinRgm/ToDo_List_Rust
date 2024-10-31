@@ -110,7 +110,7 @@ fn main() -> io::Result<()> {
     }
 
 
-    // Écriture dans le fichier JSON (reformater)
+    // Écriture dans le fichier JSON (reformaté)
     fs::write(PATH, serde_json::to_string_pretty(&todos)
         .expect("Sérialisation impossible"))
         .expect("Écriture impossible");
@@ -207,7 +207,7 @@ fn due(_todos: &mut Vec<Todo>, _id: usize, _due_date: &str) {
 // ---------------------------------------------------------------------------------- Todo listée --
 fn list(todos: &mut Vec<Todo>) {
 
-    println!("List");
+    // println!("List");
 
     if todos.is_empty()
     {
@@ -232,25 +232,8 @@ fn list(todos: &mut Vec<Todo>) {
 // ----------------------------------------------------------------------------------- Todo triée --
 fn sort(todos: &mut Vec<Todo>) {
 
-    println!("Sort");
+    // println!("Sort");
 
-    /*
-    if todos.is_empty()
-    {
-        println!("Aucune tâche à afficher.");
-    }
-        // Afficher les todos avec leurs status
-    else
-    {
-        for (i, todo) in todos.iter().enumerate() {
-            let status = if todo.done
-            {
-                "Terminée"
-            } else {
-                "Non terminée"
-            };
-            println!("{}: [{}] {}", i + 1, status, todo.todo_text);
-        }
-    }
-    */
+    todos.sort_by(|a, b| a.due.cmp(&b.due));
+
 }
