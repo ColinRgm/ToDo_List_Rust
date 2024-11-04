@@ -231,7 +231,7 @@ fn list(todos: &mut Vec<Todo>) {
             } else {
                 "Non terminée"
             };
-            println!("{}: [{}] {}", i + 1, status, todo.todo_text);
+            println!("{}: {} [{}]", i + 1, todo.todo_text, status);
         }
     }
 }

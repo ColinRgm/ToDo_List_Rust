@@ -1,6 +1,6 @@
 # Ma ToDo List en Rust
 
-## Fonctionnalités
+### Fonctionnalités
 - Ajouter de nouvelles todos en une commande
 
 - Supprimer une todo avec son numéro
@@ -39,28 +39,39 @@
 
 - [x] Ajoutez un drapeau --undone suvi du numéro de la todo pour indiquer qu'elle n'est pas terminée.
 
-- [ ] Ajoutez un nouveau drapeau --due suivi d'une date au format "YY-MM-DD" afin d'ajouter une deadline.
+- [x] Ajoutez un nouveau drapeau --due suivi d'une date au format "YY-MM-DD" afin d'ajouter une deadline.
 
 - [x] Ajoutez un drapeau --list pour afficher toutes les toods et leurs status (done, undone).
 
-- [ ] Ajoutez un drapeau --sort pour trier la liste dans l'ordre de priorités
+- [x] Ajoutez un drapeau --sort pour trier la liste dans l'ordre de priorités
 
 
 
-### Comment utiliser la ToDo List
+## Comment utiliser la ToDo List
 
 1. Ouvrir le dossier du projet dans le terminal
+
 2. Lancer la commande cargo build
    3. Permet de compiler le code source et de générer un exécutable
+
 4. Lancer ensuite la commande cargo run
    5. Qui permettra de lancer le projet
    6. Vous demandera également d'ajouter une tâche
+
 7. Si vous voulez supprimer un tâche
    8. cargo run -- --delete --id 1 (supprimera la tâche avec l'ID n°1)
+
 8. Pour marquer une tâche comme terminée
    9. cargo run -- --done --id 1
+
 10. Pour marquer une tâche comme non terminée
     11. cargo run -- --undone --id 1
+
 12. Pour lister vos tâches
     13. cargo run -- --list
-14. 
+
+14. Pour ajouter une deadline à une tâche
+    15. cargo run -- -- due-date "2025-01-01" --id 1
+
+15. Pour trier vos tâches par date (ordre chronologique)
+    16. cargo run -- --sort
