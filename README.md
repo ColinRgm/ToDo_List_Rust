@@ -46,10 +46,10 @@
 - [x] Ajoutez un drapeau --sort pour trier la liste dans l'ordre de priorités
 
 
-### Utile
+## Utile
 Nous utilisons le format JSON pour une meilleure lisibilité et une utilisation simplifié
 
-Le code est divisé en plusieurs partie :
+#### Le code est divisé en plusieurs partie :
 - Ajout des librairies
 
 - Constante récupérant le fichier JSON, afin d'éviter des répétitions dans la code
