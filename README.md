@@ -46,32 +46,14 @@
 - [x] Ajoutez un drapeau --sort pour trier la liste dans l'ordre de priorités
 
 
+### Utile
+Nous utilisons le format JSON pour une meilleure lisibilité et une utilisation simplifié
 
-## Comment utiliser la ToDo List
-
-1. Ouvrir le dossier du projet dans le terminal
-
-2. Lancer la commande cargo build
-   3. Permet de compiler le code source et de générer un exécutable
-
-4. Lancer ensuite la commande cargo run
-   5. Qui permettra de lancer le projet
-   6. Vous demandera également d'ajouter une tâche
-
-7. Si vous voulez supprimer un tâche
-   8. cargo run -- --delete --id 1 (supprimera la tâche avec l'ID n°1)
-
-8. Pour marquer une tâche comme terminée
-   9. cargo run -- --done --id 1
-
-10. Pour marquer une tâche comme non terminée
-    11. cargo run -- --undone --id 1
-
-12. Pour lister vos tâches
-    13. cargo run -- --list
-
-14. Pour ajouter une deadline à une tâche
-    15. cargo run -- -- due-date "2025-01-01" --id 1
-
-15. Pour trier vos tâches par date (ordre chronologique)
-    16. cargo run -- --sort
+Le code est divisé en plusieurs partie :
+1. Ajout des librairies
+2. Constante récupérant le fichier JSON, afin d'éviter des répétitions dans la code
+3. Création de la structure des todos
+4. Création des drapeaux utilisable par l'utilisateur
+5. Function main qui sera utiliser afin de permettre de lire, écrire et modifier le fichier JSON
+6. Une condition qui appelle le drapeau souhaité
+7. Chaque fonction appelée par les différents drapeaux
