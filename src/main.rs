@@ -198,20 +198,17 @@ fn undone(todos: &mut Vec<Todo>, id: usize) {
 
 
 // -------------------------------------------------------------------------------- Todo deadline --
-fn due(todos: &mut Vec<Todo>, id: usize, _due_date: &str) {
-
+fn due(todos: &mut Vec<Todo>, id: usize, due_date: &str) {
     println!("Due");
 
-     if id > 0 && id <= todos.len()
-    {
-        println!("Deadline ajoutée")
+    match NaiveDate::parse_from_str(&due_date, "%Y-%m-%d") {
+        Ok(date) => {
+            todos[id - 1].due = Some(date);
+        }
+        Err(_) => {
+            println!("Invalid date format! Please use YYYY-MM-DD.");
+        }
     }
-    // Si l'ID n'est pas compris entre 0 et la longeur de la liste
-    else {
-        println!("ID invalide")
-    }
-
-
 }
 
 
