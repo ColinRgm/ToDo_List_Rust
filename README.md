@@ -51,9 +51,15 @@ Nous utilisons le format JSON pour une meilleure lisibilité et une utilisation 
 
 Le code est divisé en plusieurs partie :
 - Ajout des librairies
+
 - Constante récupérant le fichier JSON, afin d'éviter des répétitions dans la code
+
 - Création de la structure des todos
+
 - Création des drapeaux utilisable par l'utilisateur
+
 - Function main qui sera utiliser afin de permettre de lire, écrire et modifier le fichier JSON
+
 - Une condition qui appelle le drapeau souhaité
+
 - Chaque fonction appelée par les différents drapeaux
